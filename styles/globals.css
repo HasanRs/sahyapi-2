@@ -1,0 +1,21 @@
+@import "~quill/dist/quill.core.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    @apply scroll-smooth;
+}
+
+.ant-carousel .slick-prev,
+.ant-carousel .slick-prev:hover,
+.ant-carousel .slick-prev:focus {
+    @apply left-2 md:left-3 lg:left-5 lg:text-3xl text-xl z-50 text-white;
+}
+
+.ant-carousel .slick-next,
+.ant-carousel .slick-next:hover,
+.ant-carousel .slick-next:focus {
+    @apply right-2 md:right-3 lg:right-5 lg:text-3xl text-xl z-50 text-white;
+}
