@@ -87,11 +87,11 @@ export default function Header() {
             >
                 <div className="flex md:w-1/3">
                     <a href="/" className="-m-1.5 p-1.5">
-                        <span className="sr-only">Motif Halı</span>
+                        <span className="sr-only">Şah Yapı</span>
                         <img
                             className="h-20 w-auto object-contain"
                             src={Logo.src}
-                            alt="Logo"
+                            alt="Şah Yapı Hırdavat"
                         />
                     </a>
                 </div>
@@ -123,12 +123,12 @@ export default function Header() {
                 <Dialog.Panel
                     className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 pt-2 pb-6">
                     <div className="flex items-center justify-between">
-                        <a href="#" className="-m-1.5 p-1.5">
-                            <span className="sr-only">Motif Halı</span>
+                        <a href="/" className="-m-1.5 p-1.5">
+                            <span className="sr-only">Şah Yapı</span>
                             <img
                                 className="h-20 w-auto object-contain"
                                 src={Logo.src}
-                                alt="Logo"
+                                alt="Şah Yapı Hırdavat"
                             />
                         </a>
                         <button
