@@ -2,7 +2,6 @@ import {useEffect, useMemo, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {Bars3Icon, XMarkIcon} from "@heroicons/react/24/outline";
 import {Menu, MenuProps, Grid} from "antd";
-import {collection, firestore, getDocs, orderBy, query} from "@/firebase";
 import { useRouter, usePathname } from 'next/navigation'
 import Logo from "@/assets/images/logo.png";
 
@@ -67,12 +66,10 @@ export default function Header() {
     ], [items]);
 
     useEffect(() => {
-        getDocs(query(collection(firestore, "services"), orderBy('created_at')))
-            .then(querySnapshot => {
-                setServices(querySnapshot.docs
-                    .map(doc => doc.data())
-                );
-            });
+        fetch("/api/services")
+            .then((res) => res.json())
+            .then(setServices)
+            .catch(() => setServices([]));
     }, []);
 
     const onClick = ({ key }: any) => {

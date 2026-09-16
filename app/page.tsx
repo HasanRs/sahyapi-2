@@ -1,217 +1,392 @@
 'use client'
 
 import Footer from "@/components/footer";
-import Header from "@/components/header"
-import {Carousel, Image} from "antd";
+import Header from "@/components/header";
+import {Carousel} from "antd";
 import {useEffect, useState} from "react";
-import {useRouter} from "next/navigation";
-import {collection, firestore, getDocs, orderBy, query} from "@/firebase";
 import Link from "next/link";
-import {limit} from "firebase/firestore";
 import moment from "moment";
 import "moment/locale/tr";
 import {LeftOutlined, RightOutlined} from "@ant-design/icons";
-import SliderOne from "@/assets/images/slider_1.jpeg";
-import SliderTwo from "@/assets/images/slider_2.jpg";
-import SliderThree from "@/assets/images/slider_3.jpg";
 
 const slider = [
     {
-        title: "ELEKTRİK MÜHENDİSLİK & TAAHHÜT HİZMETLERİ",
-        description: "Endüstriyel ve ticari sektörlere yönelik Yüksek Gerilim, Alçak Gerilim ve Zayıf Akım Hizmetleri sunan\n" +
-            "Ata Mühendislik, profesyonel ekibi ile projelerin zamanında ve en iyi şekilde ilerlemesi için sektördeki\n" +
-            "yenilikleri de yakından takip ederek optimum çözümlerle anahtar teslim hizmet vermektedir.",
-        link: "/hizmet/taahhuet-hizmetlerimiz",
-        background: SliderOne.src,
+        title: "HIRDAVAT MALZEMELERİ",
+        subtitle: "Geniş stok · Uygun fiyat · Hızlı teslimat",
+        description:
+            "Şah Yapı olarak ev, işyeri ve şantiye projeleriniz için vida, dübel, el aletleri, bağlantı elemanları, sıhhi tesisat ve yapı kimyasallarında geniş ürün yelpazesi sunuyoruz. Profesyonel ustalardan bireysel müşterilere kadar herkes için doğru malzemeyi, doğru fiyata ve zamanında temin ediyoruz. Toplu alımlarda özel fiyatlandırma ve proje bazlı tedarik desteği sağlıyoruz.",
+        link: "/hizmet/hirdavat-malzemeleri",
+        background: "/hizmetler/hirdavat.jpg",
     },
     {
-        title: "ELEKTRİK PROJE HİZMETLERİ",
-        description: "Ata Mühendislik; Trafo Merkezleri ve Enerji Nakil Hattı Projeleri, Tüm Orta Gerilim, Alçak Gerilim ve\n" +
-            "Zayıf Akım Projeleri, Şantiye Projeleri, Güç Artırım Projeleri, Otel, AVM, Fabrika, Hastane, Toplu Konut\n" +
-            "vb. Ruhsat Projeleri, Konut, İşyeri vb. Aydınlatma ve Kuvvet Projeleri, Baz İstasyonu Projeleri,\n" +
-            "Elektrikli Şarj İstasyonu Projeleri gibi enerji projelerinizin tüm aşamalarında yanınızda olur.",
-        link: "/hizmet/proje-hizmetlerimiz",
-        background: SliderThree.src,
+        title: "TADİLAT HİZMETLERİ",
+        subtitle: "Anahtar teslim · Garantili işçilik",
+        description:
+            "Daire, ev ve işyeri tadilatında alçıpan, sıva, seramik döşeme, zemin kaplama ve komple yenileme işlerinde deneyimli ekibimizle yanınızdayız. Ücretsiz keşif sonrası yazılı teklif, şeffaf fiyatlandırma ve planlı iş programı ile tadilat sürecinizi stressiz hale getiriyoruz. Malzeme tedarikini de biz üstleniyoruz.",
+        link: "/hizmet/tadilat-hizmetleri",
+        background: "/hizmetler/tadilat.jpg",
     },
     {
-        title: "YÜKSEK GERİLİM İŞLETME SORUMLULUĞU",
-        description: "Ata Mühendislik, Yüksek Gerilim İşletme Sorumluluğu alanında sunduğu hizmetlerle öncelikle\n" +
-            "işletmenizin olası risklere karşı korunması ve ekonomik kayıpların en aza indirilmesini\n" +
-            "amaçlamaktadır. Ayrıca oluşabilecek elektrik aksaklıklarına hızlı ve etkin çözümler sunarak\n" +
-            "işletmenizin enerji güvencesini sağlamaktadır.",
-        link: "/hizmet/yueksek-gerilim-isletme-sorumlulugu",
-        background: SliderTwo.src,
+        title: "BOYA & DEKORASYON",
+        subtitle: "Renk danışmanlığı · Profesyonel uygulama",
+        description:
+            "İç ve dış cephe boya, dekoratif sıva, duvar kağıdı ve yüzey hazırlığı ile mekânlarınıza estetik ve dayanıklı bir görünüm kazandırıyoruz. Silinebilir, antibakteriyel ve çevre dostu boya seçenekleriyle temiz ve hızlı uygulama garantisi sunuyoruz.",
+        link: "/hizmet/boya-dekorasyon",
+        background: "/hizmetler/boya-dekorasyon.jpg",
+    },
+    {
+        title: "BANYO & MUTFAK YENİLEME",
+        subtitle: "Su yalıtımı · Modern tasarım",
+        description:
+            "Banyo ve mutfak tadilatında su yalıtımından seramik döşemeye, ölçüye özel dolaptan vitrifiye montajına kadar anahtar teslim çözümler. Hayalinizdeki banyo ve mutfağı birlikte planlayıp, TS standartlarına uygun malzeme ve işçilikle hayata geçiriyoruz.",
+        link: "/hizmet/banyo-mutfak-yenileme",
+        background: "/hizmetler/banyo-mutfak.jpg",
     },
 ];
 
+const reasons = [
+    {title: "Ücretsiz Keşif", desc: "Adresinize gelerek projenizi inceliyor, yazılı teklif sunuyoruz."},
+    {title: "Geniş Stok", desc: "Hırdavat malzemelerinde sürekli stok, acil ihtiyaçlara hızlı çözüm."},
+    {title: "Anahtar Teslim", desc: "Tadilat projelerinde malzemeden uygulamaya tek elden hizmet."},
+    {title: "Garantili İşçilik", desc: "Tüm uygulama işlerimizde işçilik garantisi ve satış sonrası destek."},
+    {title: "Uygun Fiyat", desc: "Kaliteden ödün vermeden bütçenize uygun malzeme alternatifleri."},
+    {title: "Deneyimli Ekip", desc: "Yılların tecrübesiyle alanında uzman usta kadrosu."},
+];
+
+const steps = [
+    {step: "01", title: "İletişim & Keşif", desc: "Bizi arayın veya form doldurun. Ücretsiz keşif için randevu alın."},
+    {step: "02", title: "Teklif & Planlama", desc: "İş kalemleri, malzeme listesi ve takvim içeren yazılı teklif alın."},
+    {step: "03", title: "Uygulama", desc: "Onay sonrası ekibimiz planlanan sürede işe başlar, sizi bilgilendirir."},
+    {step: "04", title: "Teslim & Garanti", desc: "Temizlik sonrası teslim, işçilik garantisi ve destek devam eder."},
+];
+
+function ServiceCard({item, showHighlights = false}: {item: any; showHighlights?: boolean}) {
+    return (
+        <Link
+            href={"/hizmet/" + item.slug}
+            className="group flex flex-col h-full border border-gray-200 hover:border-amber-400 hover:shadow-xl transition-all duration-300 rounded-2xl overflow-hidden bg-white"
+        >
+            {item.image && (
+                <img
+                    className="w-full object-cover aspect-[16/10] group-hover:scale-105 transition-transform duration-500"
+                    src={item.image}
+                    alt={item.title}
+                />
+            )}
+            <div className="p-6 flex-1 flex flex-col">
+                {item.category && (
+                    <span className="text-xs font-semibold uppercase tracking-wider text-amber-600 mb-2">
+                        {item.category === "hirdavat" ? "Hırdavat" : "Tadilat"}
+                    </span>
+                )}
+                <h3 className="text-xl font-bold text-gray-900 group-hover:text-amber-700 transition-colors">
+                    {item.title}
+                </h3>
+                <p className="mt-3 text-gray-600 text-sm leading-relaxed flex-1 line-clamp-4">
+                    {item.short_description}
+                </p>
+                {showHighlights && item.highlights && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                        {item.highlights.slice(0, 3).map((h: string) => (
+                            <span key={h} className="text-xs bg-amber-50 text-amber-800 px-2 py-1 rounded-full">
+                                {h}
+                            </span>
+                        ))}
+                    </div>
+                )}
+                <span className="mt-4 inline-flex items-center text-sm font-semibold text-amber-600 group-hover:text-amber-700">
+                    Detaylı bilgi
+                    <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                </span>
+            </div>
+        </Link>
+    );
+}
+
 export default function Home() {
-    const [loading, setLoading] = useState<any>(true);
-    const router = useRouter();
+    const [loading, setLoading] = useState(true);
     const [references, setReferences] = useState<any[]>([]);
     const [services, setServices] = useState<any[]>([]);
     const [posts, setPosts] = useState<any[]>([]);
 
+    const hirdavat = services.filter((s) => s.category === "hirdavat");
+    const tadilat = services.filter((s) => s.category === "tadilat");
+
     useEffect(() => {
-        getData();
+        (async () => {
+            const [refRes, svcRes, postRes] = await Promise.all([
+                fetch("/api/references?limit=10"),
+                fetch("/api/services"),
+                fetch("/api/posts"),
+            ]);
+            setReferences(await refRes.json());
+            setServices(await svcRes.json());
+            setPosts((await postRes.json()).slice(0, 3));
+            setLoading(false);
+        })();
     }, []);
-
-    const getData = async () => {
-        let referenceSnapshot = await getDocs(query(collection(firestore, "references"), orderBy('created_at'), limit(10)))
-        setReferences(referenceSnapshot.docs
-            .map(doc => doc.data()));
-
-        let serviceSnapshot = await getDocs(query(collection(firestore, "services"), orderBy('created_at')))
-        setServices(serviceSnapshot.docs
-            .map(doc => doc.data()));
-
-        let postSnapshot = await getDocs(query(collection(firestore, "posts"), orderBy('created_at', 'desc'), limit(3)))
-        setPosts(postSnapshot.docs
-            .map(doc => doc.data()));
-
-        setLoading(false);
-    };
 
     return (
         <div className="pt-24 bg-white">
-            <Header/>
+            <Header />
 
-            {loading ? <div className="flex items-center justify-center min-h-[50vh]">
-                <div
-                    style={{ borderTopColor: "transparent" }}
-                    className="w-8 h-8 border-4 border-blue-200 rounded-full animate-spin"
-                />
-            </div> : <>
-            <Carousel
-                dots={false}
-                arrows
-                swipe
-                prevArrow={<LeftOutlined />}
-                nextArrow={<RightOutlined />}
-                rootClassName="mb-16"
-            >
-                {slider.map((item, i) => <div key={i}>
-                    <div className="relative lg:h-[calc(100vh-6rem)] h-80 md:h-96 flex overflow-hidden bg-white border rounded shadow-sm">
-                        <div className="container mx-auto z-20">
-                            <div className="flex flex-col justify-center p-8 md:p-12 lg:p-16 lg:!pr-0 w-full lg:w-1/2 h-full text-white">
-                                <h5 className="mb-3 font-extrabold leading-none sm:text-2xl md:text-3xl lg:text-4xl">
-                                    {item.title}
-                                </h5>
-                                <p className="text-xs sm:text-sm lg:text-lg">
-                                    {item.description}
+            {loading ? (
+                <div className="flex items-center justify-center min-h-[50vh]">
+                    <div
+                        style={{borderTopColor: "transparent"}}
+                        className="w-8 h-8 border-4 border-amber-500 rounded-full animate-spin"
+                    />
+                </div>
+            ) : (
+                <>
+                    <Carousel
+                        dots
+                        arrows
+                        swipe
+                        prevArrow={<LeftOutlined />}
+                        nextArrow={<RightOutlined />}
+                        rootClassName="mb-0"
+                    >
+                        {slider.map((item, i) => (
+                            <div key={i}>
+                                <div className="relative lg:h-[calc(100vh-6rem)] h-96 md:h-[28rem] flex overflow-hidden bg-gray-900">
+                                    <div className="container mx-auto z-20 relative">
+                                        <div className="flex flex-col justify-center p-8 md:p-12 lg:p-16 lg:!pr-8 w-full lg:w-3/5 h-full text-white">
+                                            <span className="text-amber-400 text-sm font-semibold uppercase tracking-wider mb-2">
+                                                {item.subtitle}
+                                            </span>
+                                            <h2 className="mb-4 font-extrabold leading-tight sm:text-2xl md:text-3xl lg:text-5xl">
+                                                {item.title}
+                                            </h2>
+                                            <p className="text-sm sm:text-base lg:text-lg text-white/90 leading-relaxed line-clamp-4 lg:line-clamp-none">
+                                                {item.description}
+                                            </p>
+                                            <div className="mt-8 flex flex-wrap gap-4">
+                                                <Link
+                                                    href={item.link}
+                                                    className="rounded-lg bg-amber-500 px-8 py-3 text-sm font-semibold !text-white shadow-lg hover:bg-amber-600 transition-colors"
+                                                >
+                                                    Detaylı İncele
+                                                </Link>
+                                                <Link
+                                                    href="/iletisim"
+                                                    className="rounded-lg border-2 border-white/80 px-8 py-3 text-sm font-semibold !text-white hover:bg-white/10 transition-colors"
+                                                >
+                                                    Teklif Alın
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/60 to-transparent z-10" />
+                                    <img src={item.background} alt={item.title} className="object-cover w-full absolute h-full" />
+                                </div>
+                            </div>
+                        ))}
+                    </Carousel>
+
+                    <div className="container mx-auto px-6 lg:px-8 py-16 space-y-24">
+                        <section className="grid lg:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <span className="text-amber-600 font-semibold text-sm uppercase tracking-wider">Şah Yapı</span>
+                                <h2 className="mt-2 text-3xl font-bold text-gray-900 sm:text-4xl leading-tight">
+                                    Hırdavat ve Tadilatta Güvenilir Çözüm Ortağınız
+                                </h2>
+                                <p className="mt-6 text-gray-600 text-lg leading-relaxed">
+                                    Şah Yapı olarak Çorlu ve çevresinde hırdavat malzemeleri satışı ile tadilat hizmetlerinde tek çatı altında hizmet veriyoruz. Ev sahiplerinden profesyonel ustalara, küçük tamirattan komple daire yenilemeye kadar her ölçekte ihtiyacınıza uygun çözümler sunuyoruz.
                                 </p>
-                                <div className="mt-8 flex flex-wrap text-center">
-                                    <Link href={item.link}
-                                       className="rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium !text-white shadow hover:bg-blue-600 transition-colors focus:outline-none sm:w-auto">
-                                        İncele
+                                <p className="mt-4 text-gray-600 leading-relaxed">
+                                    Geniş stoklu hırdavat departmanımızda ihtiyacınız olan malzemeyi anında bulabilir; tadilat projelerinizde ise deneyimli ekibimizle anahtar teslim hizmet alabilirsiniz. Kaliteli malzeme, uygun fiyat ve zamanında teslimat ilkelerimizdir.
+                                </p>
+                                <div className="mt-8 flex flex-wrap gap-4">
+                                    <Link href="/kurumsal" className="text-amber-600 font-semibold hover:text-amber-700">
+                                        Kurumsal →
+                                    </Link>
+                                    <Link href="/hizmet/hirdavat-malzemeleri" className="text-amber-600 font-semibold hover:text-amber-700">
+                                        Tüm Hizmetler →
                                     </Link>
                                 </div>
                             </div>
-                        </div>
-                        <div className="absolute inset-0 bg-blue-900/50 sm:bg-transparent sm:bg-gradient-to-r sm:from-blue-900 sm:to-transparent z-10"/>
-                        <img
-                            src={item.background}
-                            alt="Image"
-                            className="object-cover w-full absolute h-full"
-                        />
-                    </div>
-                </div>)}
-            </Carousel>
-            <div className="container mx-auto isolate bg-white px-6 lg:px-8 pb-8 space-y-16">
-                {services.length > 0 && <section className="text-center" id="products">
-                    <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-10">
-                        Hizmetler
-                    </h2>
+                            <div className="grid grid-cols-2 gap-4">
+                                <img src="/hizmetler/hirdavat.jpg" alt="Hırdavat" className="rounded-2xl object-cover h-48 w-full shadow-lg" />
+                                <img src="/hizmetler/tadilat.jpg" alt="Tadilat" className="rounded-2xl object-cover h-48 w-full shadow-lg mt-8" />
+                                <img src="/hizmetler/boya-dekorasyon.jpg" alt="Boya" className="rounded-2xl object-cover h-48 w-full shadow-lg -mt-8" />
+                                <img src="/hizmetler/banyo-mutfak.jpg" alt="Banyo Mutfak" className="rounded-2xl object-cover h-48 w-full shadow-lg" />
+                            </div>
+                        </section>
 
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {services.map(item =>
-                            <Link
-                                key={item.uuid}
-                                href={"/hizmet/" + item.slug}
-                                className="group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5"
-                            >
-                                <div className="my-auto space-y-6">
-                                    {item.image && <img className="w-full object-cover aspect-[16/11] rounded-xl" src={item.image}
-                                                        alt="Image"/>}
-                                    <div className="space-y-5">
-                                        <h3 className="text-xl font-semibold text-gray-800">
-                                            {item.title}
-                                        </h3>
-                                        <p hidden={!item.short_description} className="text-gray-600">
-                                            {item.short_description}
-                                        </p>
-                                    </div>
+                        <section>
+                            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+                                <div>
+                                    <span className="text-amber-600 font-semibold text-sm uppercase tracking-wider">Kategori</span>
+                                    <h2 className="text-3xl font-bold text-gray-900 mt-1">Hırdavat Malzemeleri</h2>
+                                    <p className="mt-2 text-gray-600 max-w-xl">
+                                        Vida, dübel, el aletleri, tesisat malzemeleri ve yapı kimyasallarında geniş stok ve hızlı tedarik.
+                                    </p>
                                 </div>
-                            </Link>)}
-                    </div>
-                </section>}
+                                <Link href="/hizmet/hirdavat-malzemeleri" className="text-amber-600 font-semibold hover:text-amber-700 whitespace-nowrap">
+                                    Tümünü gör →
+                                </Link>
+                            </div>
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {hirdavat.map((item) => (
+                                    <ServiceCard key={item.uuid} item={item} />
+                                ))}
+                            </div>
+                        </section>
 
-                {posts.length > 0 && <section>
-                    <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
-                        <h2 className="text-2xl font-bold md:text-4xl md:leading-tight">En son haberlerimizi okuyun</h2>
-                    </div>
+                        <section>
+                            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+                                <div>
+                                    <span className="text-amber-600 font-semibold text-sm uppercase tracking-wider">Kategori</span>
+                                    <h2 className="text-3xl font-bold text-gray-900 mt-1">Tadilat Hizmetleri</h2>
+                                    <p className="mt-2 text-gray-600 max-w-xl">
+                                        Ev, daire ve işyeri tadilatında anahtar teslim yenileme; boya, banyo, mutfak ve dış cephe çözümleri.
+                                    </p>
+                                </div>
+                                <Link href="/hizmet/tadilat-hizmetleri" className="text-amber-600 font-semibold hover:text-amber-700 whitespace-nowrap">
+                                    Tümünü gör →
+                                </Link>
+                            </div>
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {tadilat.map((item) => (
+                                    <ServiceCard key={item.uuid} item={item} />
+                                ))}
+                            </div>
+                        </section>
 
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {posts.map(post =>
-                            <Link key={post.uuid} className="group hover:bg-gray-100 rounded-xl p-5 transition-all"
-                                  href={"/blog/" + post.slug}>
-                                    {post.image ? <img className="w-full object-cover aspect-[16/10] rounded-xl" src={post.image}
-                                                        alt="Image"/> : <div className="w-full aspect-[16/10] rounded-xl bg-gray-200" />}
-                                    <h3 className="mt-5 text-xl text-gray-800">{post.title}</h3>
-                                    <p className="mt-2 text-sm text-gray-600 first-letter:uppercase">{moment(post.created_at).fromNow()}</p>
-                            </Link>)}
-                    </div>
+                        <section className="bg-gray-50 rounded-3xl p-8 md:p-12">
+                            <div className="text-center mb-12">
+                                <h2 className="text-3xl font-bold text-gray-900">Neden Şah Yapı?</h2>
+                                <p className="mt-3 text-gray-600 max-w-2xl mx-auto">
+                                    Hırdavat satışından tadilat uygulamasına kadar güvenilir, şeffaf ve kaliteli hizmet anlayışı.
+                                </p>
+                            </div>
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {reasons.map((r) => (
+                                    <div key={r.title} className="text-center">
+                                        <div className="w-12 h-12 bg-amber-500 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                                            ✓
+                                        </div>
+                                        <h3 className="font-semibold text-gray-900 text-lg">{r.title}</h3>
+                                        <p className="mt-2 text-gray-600 text-sm leading-relaxed">{r.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
 
-                    <div className="mt-12 text-center">
-                        <Link
-                            className="inline-flex justify-center items-center gap-x-2 text-center bg-white border hover:border-gray-300 text-sm text-blue-600 hover:text-blue-700 font-medium hover:shadow-sm rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white transition py-3 px-4"
-                            href="/blog"
-                        >
-                            Daha fazla göster
-                            <svg className="w-2.5 h-2.5" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path
-                                    d="M5.27921 2L10.9257 7.64645C11.1209 7.84171 11.1209 8.15829 10.9257 8.35355L5.27921 14"
-                                    stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                            </svg>
-                        </Link>
-                    </div>
-                </section>}
+                        <section>
+                            <div className="text-center mb-12">
+                                <h2 className="text-3xl font-bold text-gray-900">Nasıl Çalışıyoruz?</h2>
+                                <p className="mt-3 text-gray-600">Tadilat projelerinizde 4 adımda anahtar teslim hizmet</p>
+                            </div>
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                                {steps.map((s) => (
+                                    <div key={s.step} className="relative">
+                                        <span className="text-5xl font-black text-amber-100">{s.step}</span>
+                                        <h3 className="mt-2 text-lg font-semibold text-gray-900">{s.title}</h3>
+                                        <p className="mt-2 text-gray-600 text-sm leading-relaxed">{s.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
 
-                {references.length > 0 && <section>
-                    <div className="mb-10 text-center">
-                        <span className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                            Referanslar
-                        </span>
-                    </div>
+                        {services.length > 0 && (
+                            <section id="products">
+                                <div className="text-center mb-10">
+                                    <h2 className="text-3xl font-bold text-gray-900">Tüm Hizmetlerimiz</h2>
+                                    <p className="mt-3 text-gray-600 max-w-2xl mx-auto">
+                                        Hırdavat malzemelerinden komple tadilata kadar farklı hizmet alanlarında yanınızdayız.
+                                    </p>
+                                </div>
+                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {services.map((item) => (
+                                        <ServiceCard key={item.uuid} item={item} showHighlights />
+                                    ))}
+                                </div>
+                            </section>
+                        )}
 
-                    <div className="grid grid-cols-2 gap-6 text-center lg:grid-cols-5">
-                        {references.map((item: any, index: number) =>
-                            <div key={index} className="flex items-center justify-center cursor-pointer group">
-                                <Image
-                                    preview={{mask: false}}
-                                    src={item.image}
-                                    alt="Logo"
-                                    className="block object-contain !h-32 group-hover:scale-90 transition-all"/>
-                            </div>)}
-                    </div>
+                        <section className="bg-amber-500 rounded-3xl p-8 md:p-16 text-center text-white">
+                            <h2 className="text-3xl md:text-4xl font-bold">Projeniz İçin Ücretsiz Keşif</h2>
+                            <p className="mt-4 text-amber-100 text-lg max-w-2xl mx-auto">
+                                Hırdavat malzeme ihtiyacınız veya tadilat projeniz için hemen iletişime geçin. Uzman ekibimiz size en uygun çözümü sunmak için hazır.
+                            </p>
+                            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                                <Link
+                                    href="/iletisim"
+                                    className="rounded-lg bg-white text-amber-700 px-8 py-3 font-semibold hover:bg-amber-50 transition-colors"
+                                >
+                                    İletişime Geçin
+                                </Link>
+                                <a
+                                    href="tel:+905435334144"
+                                    className="rounded-lg border-2 border-white px-8 py-3 font-semibold hover:bg-white/10 transition-colors"
+                                >
+                                    +90 543 533 41 44
+                                </a>
+                            </div>
+                        </section>
 
-                    <div className="my-12 text-center">
-                        <Link
-                            className="inline-flex justify-center items-center gap-x-2 text-center bg-white border hover:border-gray-300 text-sm text-blue-600 hover:text-blue-700 font-medium hover:shadow-sm rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white transition py-3 px-4"
-                            href="/referanslar"
-                        >
-                            Daha fazla göster
-                            <svg className="w-2.5 h-2.5" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path
-                                    d="M5.27921 2L10.9257 7.64645C11.1209 7.84171 11.1209 8.15829 10.9257 8.35355L5.27921 14"
-                                    stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                            </svg>
-                        </Link>
-                    </div>
-                </section>}
-            </div>
-            </>}
+                        {posts.length > 0 && (
+                            <section>
+                                <div className="max-w-2xl mx-auto text-center mb-10">
+                                    <h2 className="text-2xl font-bold md:text-3xl">Blog & Haberler</h2>
+                                    <p className="mt-2 text-gray-600">Tadilat ipuçları ve güncel haberlerimiz</p>
+                                </div>
+                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {posts.map((post) => (
+                                        <Link
+                                            key={post.uuid}
+                                            className="group border border-gray-200 hover:border-amber-300 rounded-xl overflow-hidden hover:shadow-lg transition-all"
+                                            href={"/blog/" + post.slug}
+                                        >
+                                            {post.image ? (
+                                                <img className="w-full object-cover aspect-[16/10]" src={post.image} alt={post.title} />
+                                            ) : (
+                                                <div className="w-full aspect-[16/10] bg-gray-200" />
+                                            )}
+                                            <div className="p-5">
+                                                <h3 className="text-lg font-semibold text-gray-800 group-hover:text-amber-700">{post.title}</h3>
+                                                <p className="mt-2 text-sm text-gray-500">{moment(post.created_at).fromNow()}</p>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                                <div className="mt-10 text-center">
+                                    <Link href="/blog" className="text-amber-600 font-semibold hover:text-amber-700">
+                                        Tüm yazılar →
+                                    </Link>
+                                </div>
+                            </section>
+                        )}
 
-            <Footer/>
+                        {references.length > 0 && (
+                            <section>
+                                <div className="text-center mb-10">
+                                    <h2 className="text-3xl font-bold text-gray-900">Referanslarımız</h2>
+                                    <p className="mt-2 text-gray-600">Güvenle çalıştığımız markalar ve kurumlar</p>
+                                </div>
+                                <div className="grid grid-cols-2 gap-6 lg:grid-cols-5">
+                                    {references.map((ref, i) => (
+                                        <div key={i} className="flex items-center justify-center p-4">
+                                            <img src={ref.image} alt="Referans" className="object-contain h-24 grayscale hover:grayscale-0 transition-all" />
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="mt-10 text-center">
+                                    <Link href="/referanslar" className="text-amber-600 font-semibold hover:text-amber-700">
+                                        Tüm referanslar →
+                                    </Link>
+                                </div>
+                            </section>
+                        )}
+                    </div>
+                </>
+            )}
+
+            <Footer />
         </div>
     );
 }

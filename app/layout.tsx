@@ -12,8 +12,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-    title: "Şah Yapı Hırdavat",
-    description: "Şah Yapı Hırdavat",
+    title: "Şah Yapı | Hırdavat ve Tadilat",
+    description: "Şah Yapı — Hırdavat malzemeleri, tadilat, boya dekorasyon ve yenileme hizmetleri.",
     icons: {
         icon: [
             { url: "/favicon.ico", sizes: "any" },
@@ -24,10 +24,10 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: "Şah Yapı Hırdavat",
-        description: "Şah Yapı Hırdavat",
+        title: "Şah Yapı | Hırdavat ve Tadilat",
+        description: "Hırdavat malzemeleri ve profesyonel tadilat hizmetleri.",
     },
-    metadataBase: new URL("https://atamep.com"),
+    metadataBase: new URL("https://sahyapihirdavat.com"),
     themeColor: "#FFF",
 };
 
