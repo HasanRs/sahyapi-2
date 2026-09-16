@@ -2,18 +2,15 @@ import Link from "next/link";
 import Leo from "@/assets/images/leo.png";
 import {InstagramOutlined} from "@ant-design/icons";
 import {useEffect, useState} from "react";
-import {collection, firestore, getDocs, orderBy, query} from "@/firebase";
 
 export default function Footer() {
   const [services, setServices] = useState<any[]>([]);
 
   useEffect(() => {
-    getDocs(query(collection(firestore, "services"), orderBy('created_at')))
-        .then(querySnapshot => {
-          setServices(querySnapshot.docs
-              .map(doc => doc.data())
-          );
-        });
+    fetch("/api/services")
+      .then((res) => res.json())
+      .then(setServices)
+      .catch(() => setServices([]));
   }, []);
 
   return (
@@ -71,7 +68,7 @@ export default function Footer() {
         <div className="">
           <div className="flex justify-between items-center">
             <div>
-              <p className="mt-1 text-xs sm:text-sm text-gray-600">ATA Mühendislik A.Ş. © 2022 | Tüm hakları saklıdır.</p>
+              <p className="mt-1 text-xs sm:text-sm text-gray-600">Şah Yapı © {new Date().getFullYear()} | Tüm hakları saklıdır.</p>
             </div>
 
             <div className="flex gap-4">

@@ -12,14 +12,22 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-    title: "ATA Mühendislik",
-    description: "ATA Mühendislik",
+    title: "Şah Yapı | Hırdavat ve Tadilat",
+    description: "Şah Yapı — Hırdavat malzemeleri, tadilat, boya dekorasyon ve yenileme hizmetleri.",
+    icons: {
+        icon: [
+            { url: "/favicon.ico", sizes: "any" },
+            { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+            { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+        ],
+        apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    },
     twitter: {
         card: "summary_large_image",
-        title: "ATA Mühendislik",
-        description: "ATA Mühendislik",
+        title: "Şah Yapı | Hırdavat ve Tadilat",
+        description: "Hırdavat malzemeleri ve profesyonel tadilat hizmetleri.",
     },
-    metadataBase: new URL("https://atamep.com"),
+    metadataBase: new URL("https://sahyapihirdavat.com"),
     themeColor: "#FFF",
 };
 
