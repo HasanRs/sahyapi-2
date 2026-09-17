@@ -8,6 +8,7 @@ import Link from "next/link";
 import moment from "moment";
 import "moment/locale/tr";
 import {LeftOutlined, RightOutlined} from "@ant-design/icons";
+import {collection, firestore, getDocs, orderBy, query} from "@/firebase";
 
 const slider = [
     {
@@ -116,14 +117,14 @@ export default function Home() {
 
     useEffect(() => {
         (async () => {
-            const [refRes, svcRes, postRes] = await Promise.all([
-                fetch("/api/references?limit=10"),
-                fetch("/api/services"),
-                fetch("/api/posts"),
+            const [refSnap, svcSnap, postSnap] = await Promise.all([
+                getDocs(query(collection(firestore, "references"), orderBy("created_at"))),
+                getDocs(query(collection(firestore, "services"), orderBy("created_at"))),
+                getDocs(query(collection(firestore, "posts"), orderBy("created_at", "desc"))),
             ]);
-            setReferences(await refRes.json());
-            setServices(await svcRes.json());
-            setPosts((await postRes.json()).slice(0, 3));
+            setReferences(refSnap.docs.map((d) => d.data()).slice(0, 10));
+            setServices(svcSnap.docs.map((d) => d.data()));
+            setPosts(postSnap.docs.map((d) => d.data()).slice(0, 3));
             setLoading(false);
         })();
     }, []);
