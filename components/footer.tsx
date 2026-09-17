@@ -1,15 +1,14 @@
 import Link from "next/link";
 import Leo from "@/assets/images/leo.png";
-import {InstagramOutlined} from "@ant-design/icons";
 import {useEffect, useState} from "react";
-import {collection, firestore, getDocs, orderBy, query} from "@/firebase";
 
 export default function Footer() {
   const [services, setServices] = useState<any[]>([]);
 
   useEffect(() => {
-    getDocs(query(collection(firestore, "services"), orderBy("created_at")))
-      .then((snap) => setServices(snap.docs.map((d) => d.data())))
+    fetch("/api/services", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => setServices(Array.isArray(data) ? data : []))
       .catch(() => setServices([]));
   }, []);
 
@@ -44,7 +43,7 @@ export default function Footer() {
 
           <div className="mt-3 grid space-y-3 text-sm">
             <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="tel:+905435334144">Telefon: +90 543 533 41 44</a></p>
-            <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="mailto:info@atamep.com">E-posta: info@atamep.com</a></p>
+            <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="mailto:info@sahyapihirdavat.com">E-posta: info@sahyapihirdavat.com</a></p>
             <p className="text-gray-600">Adres: Kazımiye Mah Dumlupınar Cad. Kılıçoğlu Prestij İş Merkezi No:9-11 Kat:5 D:22 Tekirdağ/Çorlu</p>
           </div>
         </div>
@@ -69,12 +68,6 @@ export default function Footer() {
           <div className="flex justify-between items-center">
             <div>
               <p className="mt-1 text-xs sm:text-sm text-gray-600">Şah Yapı © {new Date().getFullYear()} | Tüm hakları saklıdır.</p>
-            </div>
-
-            <div className="flex gap-4">
-              <a className="inline-block text-gray-500 hover:text-gray-800" href="https://instagram.com/atamuhendislikk" target="_blank">
-                <InstagramOutlined />
-              </a>
             </div>
           </div>
         </div>

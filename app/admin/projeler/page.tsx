@@ -2,13 +2,11 @@
 import React, {useEffect, useState} from "react";
 import AdminLayout from "../layouts/AdminLayout";
 import Table from "../components/table";
-import {firestore, collection, getDocs, getStorage} from "firebase.js";
-import {deleteDoc, deleteObject, doc, orderBy, query, ref} from "@/firebase";
+import {apiGet, apiSend} from "@/lib/client-api";
 import {Button, Image, Modal, message} from "antd";
 import ProjectDrawer from "@/app/admin/components/ProjectDrawer";
 
 export default function Home() {
-    const storage = getStorage();
     const [services, setServices] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [updateItem, setUpdateItem] = useState<any>();
@@ -21,10 +19,9 @@ export default function Home() {
 
     const getData = async () => {
         setLoading(true);
-        let snapshot = await getDocs(query(collection(firestore, "projects"), orderBy('created_at')))
-        setServices(snapshot.docs
-            .map(doc => doc.data())
-            .map(item => ({
+        const items = await apiGet("/api/projects");
+        setServices(
+            (items as any[]).map(item => ({
                 ...item,
                 key: item.uuid,
                 status: item.is_completed ? "Tamamlandı" : "Devam ediyor",
@@ -37,7 +34,7 @@ export default function Home() {
         {
             title: "Görseller",
             width: "75px",
-            render: (text: string, record: any) => record.image.length > 0 ? (
+            render: (text: string, record: any) => record.image?.length > 0 ? (
                 <Image.PreviewGroup items={record.image}>
                     <Image src={record.image[0]} preview={{mask: "Önizle"}} className="object-contain" alt="Preview" width={75} height={75}/>
                 </Image.PreviewGroup>
@@ -80,15 +77,9 @@ export default function Home() {
                 danger: true,
             },
             onOk() {
-                return new Promise<void>(async (resolve, reject) => {
+                return new Promise<void>(async (resolve) => {
                     for (let selectedRow of selectedRows) {
-                        await deleteDoc(doc(firestore, "projects", selectedRow.uuid));
-
-                        if (selectedRow.image) {
-                            try {
-                                await deleteObject(ref(storage, selectedRow.image));
-                            } catch {}
-                        }
+                        await apiSend(`/api/projects/${selectedRow.uuid}`, "DELETE");
                     }
 
                     resolve();
@@ -109,14 +100,8 @@ export default function Home() {
                 danger: true,
             },
             onOk() {
-                return new Promise<void>(async (resolve, reject) => {
-                    await deleteDoc(doc(firestore, "projects", item.uuid));
-
-                    if (item.image) {
-                        try {
-                            await deleteObject(ref(storage, item.image));
-                        } catch {}
-                    }
+                return new Promise<void>(async (resolve) => {
+                    await apiSend(`/api/projects/${item.uuid}`, "DELETE");
 
                     resolve();
                     getData();

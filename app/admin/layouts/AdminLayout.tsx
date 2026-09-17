@@ -94,7 +94,7 @@ export default function AdminLayout({
                             className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-8 py-4">
                             <div className="flex items-center justify-between">
                                 <a href="#" className="-m-1.5 p-1.5">
-                                    <span className="sr-only">Motif Halı</span>
+                                    <span className="sr-only">Şah Yapı</span>
                                     <img
                                         className="h-12 w-auto object-contain"
                                         src={Leo.src}

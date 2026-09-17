@@ -2,15 +2,13 @@
 import React, {useEffect, useState} from "react";
 import AdminLayout from "../layouts/AdminLayout";
 import Table from "../components/table";
-import {firestore, collection, getDocs, getStorage, query, orderBy} from "firebase.js";
-import {deleteDoc, deleteObject, doc, ref} from "@/firebase";
+import {apiGet, apiSend} from "@/lib/client-api";
 import {Button, Image, Modal, message} from "antd";
 import PostDrawer from "@/app/admin/components/PostDrawer";
 import moment from "moment";
 import "moment/locale/tr";
 
 export default function Home() {
-    const storage = getStorage();
     const [posts, setPosts] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [updateItem, setUpdateItem] = useState<any>();
@@ -23,10 +21,9 @@ export default function Home() {
 
     const getData = async () => {
         setLoading(true);
-        let snapshot = await getDocs(query(collection(firestore, "posts"), orderBy('created_at')))
-        setPosts(snapshot.docs
-            .map(doc => doc.data())
-            .map(item => ({
+        const items = await apiGet("/api/posts");
+        setPosts(
+            (items as any[]).map(item => ({
                 ...item,
                 key: item.uuid,
             }))
@@ -78,15 +75,9 @@ export default function Home() {
                 danger: true,
             },
             onOk() {
-                return new Promise<void>(async (resolve, reject) => {
+                return new Promise<void>(async (resolve) => {
                     for (let selectedRow of selectedRows) {
-                        await deleteDoc(doc(firestore, "posts", selectedRow.uuid));
-
-                        if (selectedRow.image) {
-                            try {
-                                await deleteObject(ref(storage, selectedRow.image));
-                            } catch {}
-                        }
+                        await apiSend(`/api/posts/${selectedRow.uuid}`, "DELETE");
                     }
 
                     resolve();
@@ -107,14 +98,8 @@ export default function Home() {
                 danger: true,
             },
             onOk() {
-                return new Promise<void>(async (resolve, reject) => {
-                    await deleteDoc(doc(firestore, "posts", item.uuid));
-
-                    if (item.image) {
-                        try {
-                            await deleteObject(ref(storage, item.image));
-                        } catch {}
-                    }
+                return new Promise<void>(async (resolve) => {
+                    await apiSend(`/api/posts/${item.uuid}`, "DELETE");
 
                     resolve();
                     getData();

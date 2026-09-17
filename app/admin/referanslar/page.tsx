@@ -1,15 +1,13 @@
 'use client';
 import React, {useEffect, useState} from "react";
 import AdminLayout from "../layouts/AdminLayout";
-import {firestore, collection, getDocs, updateDoc, query, orderBy} from "firebase.js";
 import {Button, Image, Modal, message} from "antd";
 import Table from "../components/table";
 import ReferenceDrawer from "../components/ReferenceDrawer";
-import {deleteDoc, deleteObject, doc, getStorage, ref} from "@/firebase";
+import {apiGet, apiSend} from "@/lib/client-api";
 import GroupDrawer from "@/app/admin/components/GroupDrawer";
 
 export default function Home() {
-    const storage = getStorage();
     const [loading, setLoading] = useState<boolean>(true);
     const [groups, setGroups] = useState<any[]>([]);
     const [references, setReferences] = useState<any[]>([]);
@@ -24,19 +22,21 @@ export default function Home() {
 
     const getData = async () => {
         setLoading(true)
-        let groupSnapshot = await getDocs(query(collection(firestore, "groups"), orderBy('created_at')));
-        let _groups = groupSnapshot.docs.map(doc => doc.data());
+        const [_groups, referenceItems] = await Promise.all([
+            apiGet("/api/groups"),
+            apiGet("/api/references"),
+        ]);
 
-        let referenceSnapshot = await getDocs(query(collection(firestore, "references"), orderBy('created_at')));
-        setReferences(referenceSnapshot.docs
-            .map(doc => doc.data())
-            .map(item => ({
+        setReferences(
+            (referenceItems as any[]).map(item => ({
                 ...item,
                 key: item.uuid,
-                group_title: item.group ? _groups.find(group => group.uuid === item.group)?.title : null,
+                group_title: item.group
+                    ? (_groups as any[]).find(group => group.uuid === item.group)?.title
+                    : null,
             }))
         );
-        setGroups(_groups);
+        setGroups(_groups as any[]);
         setLoading(false);
     };
 
@@ -79,15 +79,9 @@ export default function Home() {
                 danger: true,
             },
             onOk() {
-                return new Promise<void>(async (resolve, reject) => {
+                return new Promise<void>(async (resolve) => {
                     for (let item of selectedRows) {
-                        await deleteDoc(doc(firestore, "references", item.uuid));
-
-                        if (item.image) {
-                            try {
-                                await deleteObject(ref(storage, item.image));
-                            } catch {}
-                        }
+                        await apiSend(`/api/references/${item.uuid}`, "DELETE");
                     }
 
                     resolve();
@@ -108,14 +102,8 @@ export default function Home() {
                 danger: true,
             },
             onOk() {
-                return new Promise<void>(async (resolve, reject) => {
-                    await deleteDoc(doc(firestore, "references", item.uuid));
-
-                    if (item.image) {
-                        try {
-                            await deleteObject(ref(storage, item.image));
-                        } catch {}
-                    }
+                return new Promise<void>(async (resolve) => {
+                    await apiSend(`/api/references/${item.uuid}`, "DELETE");
 
                     resolve();
                     getData();

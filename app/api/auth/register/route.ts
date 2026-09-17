@@ -1,25 +1,27 @@
+import { hash } from "bcrypt";
+import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import {NextApiRequest, NextApiResponse} from "next";
-import {hash} from "bcrypt";
-import {NextResponse} from "next/server";
+import { migrateLegacyUsers } from "@/lib/migrate-legacy-users";
 
 export async function POST(req: Request) {
-    const {email, password} = await req.json();
-    const exists = await prisma.atamep_users.findUnique({
-        where: {
-            email,
-        },
+  await migrateLegacyUsers();
+
+  const { email, password } = await req.json();
+  const exists = await prisma.sahyapi_users.findUnique({
+    where: { email },
+  });
+  if (exists) {
+    return NextResponse.json(
+      { error: "Kullanıcı zaten mevcut!" },
+      { status: 400 }
+    );
+  } else {
+    const user = await prisma.sahyapi_users.create({
+      data: {
+        email,
+        password: await hash(password, 10),
+      },
     });
-    if (exists) {
-        return NextResponse.json({error: "Hesap zaten oluşturulmuş!"}, {status: 400});
-    } else {
-        const user = await prisma.atamep_users.create({
-            data: {
-                email,
-                password: await hash(password, 10),
-                confirmed: false,
-            },
-        });
-        return NextResponse.json(user);
-    }
+    return NextResponse.json(user);
+  }
 }

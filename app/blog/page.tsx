@@ -1,9 +1,7 @@
 "use client";
-import {Image} from "antd";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import {useEffect, useState} from "react";
-import {collection, firestore, getDocs, orderBy, query} from "@/firebase";
 import Link from "next/link";
 import moment from "moment/moment";
 import "moment/locale/tr";
@@ -17,9 +15,13 @@ export default function BlogPage() {
     }, []);
 
     const getData = async () => {
-        let postSnapshot = await getDocs(query(collection(firestore, "posts"), orderBy('created_at', 'desc')));
-        setPosts(postSnapshot.docs
-            .map(doc => doc.data()));
+        try {
+            const res = await fetch("/api/posts", { cache: "no-store" });
+            const data = res.ok ? await res.json() : [];
+            setPosts(Array.isArray(data) ? data : []);
+        } catch {
+            setPosts([]);
+        }
         setLoading(false);
     };
 
