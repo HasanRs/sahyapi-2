@@ -10,22 +10,17 @@ import {
     Modal,
     message
 } from "antd";
-import {
-    firestore,
-    collection,
-} from "@/firebase.js";
-import {deleteDoc, doc, setDoc, updateDoc} from "@/firebase";
+import {apiSend} from "@/lib/client-api";
 
 export default function GroupDrawer({
     isActive,
     onCloseDrawer,
     groups,
-    references
 }: {
     isActive?: boolean;
     onCloseDrawer?: (saved: boolean) => void;
     groups: any[];
-    references: any[];
+    references?: any[];
 }) {
     const [form] = Form.useForm();
     const uuid = Form.useWatch('uuid', form);
@@ -42,20 +37,20 @@ export default function GroupDrawer({
     }, []);
 
     const save = useCallback(async (values: any) => {
-        let action = values.uuid ? updateDoc : setDoc;
-        const docRef = values.uuid ? doc(firestore, 'groups', values.uuid) : doc(collection(firestore, 'groups'));
-
-        await action(docRef, Object.assign({
-            uuid: values.uuid ?? docRef.id,
+        const payload = {
             title: values.title,
-        }, values.uuid ? {} : {
-            created_at: new Date().getTime(),
-        }));
+            ...(values.uuid ? {} : { created_at: new Date().getTime() }),
+        };
+
+        if (values.uuid) {
+            await apiSend(`/api/groups/${values.uuid}`, "PUT", payload);
+        } else {
+            await apiSend("/api/groups", "POST", payload);
+        }
 
         message.success("İşlem başarılı!");
         close(true);
     }, []);
-
 
     const handleDeleteItem = useCallback(() => {
         Modal.confirm({
@@ -66,26 +61,16 @@ export default function GroupDrawer({
                 danger: true,
             },
             onOk() {
-                return new Promise<void>(async (resolve, reject) => {
-                    await deleteDoc(doc(firestore, "groups", uuid));
-
-                    await updateReferencesOfDeletedGroup();
-
+                return new Promise<void>(async (resolve) => {
+                    // API nulls references.group for this group
+                    await apiSend(`/api/groups/${uuid}`, "DELETE");
                     resolve();
                     message.success("İşlem başarılı!");
                     close(true);
                 });
             },
         });
-    },  [references, uuid]);
-
-    const updateReferencesOfDeletedGroup = useCallback(async () => {
-        for (let reference of references.filter(reference => reference.group === uuid)) {
-            await updateDoc(doc(firestore, "references", reference.uuid), {
-                group: null,
-            });
-        }
-    }, [references, uuid]);
+    }, [uuid]);
 
     const handleGroupChange = useCallback((value: any) => {
         let item = value ? groups.find(group => group.uuid === value) : undefined;

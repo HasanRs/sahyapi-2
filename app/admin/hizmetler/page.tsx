@@ -2,13 +2,11 @@
 import React, {useEffect, useState} from "react";
 import AdminLayout from "../layouts/AdminLayout";
 import Table from "../components/table";
-import {firestore, collection, getDocs, getStorage} from "firebase.js";
 import ServiceDrawer from "../components/ServiceDrawer";
-import {deleteDoc, deleteObject, doc, orderBy, query, ref} from "@/firebase";
+import {apiGet, apiSend} from "@/lib/client-api";
 import {Button, Image, Modal, message} from "antd";
 
 export default function Home() {
-    const storage = getStorage();
     const [services, setServices] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [updateItem, setUpdateItem] = useState<any>();
@@ -21,10 +19,9 @@ export default function Home() {
 
     const getData = async () => {
         setLoading(true);
-        let snapshot = await getDocs(query(collection(firestore, "services"), orderBy('created_at')))
-        setServices(snapshot.docs
-            .map(doc => doc.data())
-            .map(item => ({
+        const items = await apiGet("/api/services");
+        setServices(
+            (items as any[]).map(item => ({
                 ...item,
                 key: item.uuid,
             }))
@@ -71,15 +68,9 @@ export default function Home() {
                 danger: true,
             },
             onOk() {
-                return new Promise<void>(async (resolve, reject) => {
+                return new Promise<void>(async (resolve) => {
                     for (let selectedRow of selectedRows) {
-                        await deleteDoc(doc(firestore, "services", selectedRow.uuid));
-
-                        if (selectedRow.image) {
-                            try {
-                                await deleteObject(ref(storage, selectedRow.image));
-                            } catch {}
-                        }
+                        await apiSend(`/api/services/${selectedRow.uuid}`, "DELETE");
                     }
 
                     resolve();
@@ -100,14 +91,8 @@ export default function Home() {
                 danger: true,
             },
             onOk() {
-                return new Promise<void>(async (resolve, reject) => {
-                    await deleteDoc(doc(firestore, "services", item.uuid));
-
-                    if (item.image) {
-                        try {
-                            await deleteObject(ref(storage, item.image));
-                        } catch {}
-                    }
+                return new Promise<void>(async (resolve) => {
+                    await apiSend(`/api/services/${item.uuid}`, "DELETE");
 
                     resolve();
                     getData();

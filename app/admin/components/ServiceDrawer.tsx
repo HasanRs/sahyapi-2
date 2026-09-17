@@ -12,16 +12,7 @@ import {
     UploadProps,
     App,
 } from "antd";
-import {
-    firestore,
-    collection,
-    ref,
-    uploadBytesResumable,
-    getDownloadURL,
-    getStorage, updateDoc,
-} from "@/firebase.js";
-import {deleteObject, doc, setDoc} from "@/firebase";
-import slugify from "@sindresorhus/slugify";
+import {apiSend, uploadImage} from "@/lib/client-api";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
 import dynamic from "next/dynamic";
@@ -46,10 +37,8 @@ export default function ServiceDrawer({
     const {message} = App.useApp();
     const [form] = Form.useForm();
     const uuid = Form.useWatch('uuid', form);
-    const storage = getStorage();
 
     const [imageFileList, setImageFileList] = useState<any[]>([]);
-    const [removableFiles, setRemovableFiles] = useState<any[]>([]);
     const [preview, setPreview] = useState<string | undefined>(undefined);
 
     const modules = useMemo(() => ({
@@ -92,23 +81,13 @@ export default function ServiceDrawer({
         return isJpgOrPng || Upload.LIST_IGNORE;
     }, []);
 
-    const customRequest = useCallback(({file, onError, onProgress, onSuccess}: any) => {
-        const storageRef = ref(storage, `services_${file.uid}`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
-
-        uploadTask.on(
-            "state_changed",
-            (snapshot) => {
-                const percent = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(2);
-                onProgress({percent}, file);
-            },
-            onError,
-            () => {
-                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    onSuccess(downloadURL, file)
-                });
-            }
-        );
+    const customRequest = useCallback(async ({file, onError, onSuccess}: any) => {
+        try {
+            const url = await uploadImage(file as File);
+            onSuccess(url, file);
+        } catch (err) {
+            onError(err);
+        }
     }, []);
 
     const uploadImageProps: UploadProps = useMemo(() => ({
@@ -123,61 +102,40 @@ export default function ServiceDrawer({
         onChange({fileList}) {
             setImageFileList(fileList);
         },
-        onRemove(file) {
-            if (!file.response) return;
-            if (uuid == undefined || file.size) {
-                try {
-                    deleteObject(ref(storage, file.response));
-                } catch {}
-            } else {
-                setRemovableFiles(prev => [...prev, file.response])
-            }
+        onRemove() {
+            // Data URLs need no remote delete
         },
     }), [imageFileList, uuid]);
 
     const close = useCallback((saved: boolean = false) => {
         form.resetFields();
         setImageFileList([]);
-        setRemovableFiles([]);
         onCloseDrawer!(saved);
     }, []);
 
     const cancel = useCallback(() => {
-        let uploadedFiles = imageFileList.filter(({status, size}: any) => status === 'done' && size)
-        uploadedFiles.forEach(({response}) => {
-            try {
-                deleteObject(ref(storage, response));
-            } catch {}
-        });
+        // No remote delete needed for data URL uploads
         close();
-    }, [imageFileList]);
+    }, []);
 
     const save = useCallback(async (values: any) => {
-        let action = values.uuid ? updateDoc : setDoc;
-        // @ts-ignore
-        const docRef = values.uuid ? doc(firestore, 'services', values.uuid) : doc(collection(firestore, 'services'));
-        await action(docRef, Object.assign({
-            uuid: values.uuid ?? docRef.id,
+        const payload = {
             title: values.title,
-            slug: slugify(values.title),
             short_description: values.short_description,
             description: values.description,
             image: imageFileList[0]?.response ?? null,
-        }, values.uuid ? {} : {
-            created_at: new Date().getTime(),
-        }));
+            ...(values.uuid ? {} : { created_at: new Date().getTime() }),
+        };
 
         if (values.uuid) {
-            removableFiles.forEach(file => {
-                try {
-                    deleteObject(ref(storage, file));
-                } catch {}
-            });
+            await apiSend(`/api/services/${values.uuid}`, "PUT", payload);
+        } else {
+            await apiSend("/api/services", "POST", payload);
         }
 
         message.success("İşlem başarılı!");
         close(true);
-    }, [imageFileList, removableFiles]);
+    }, [imageFileList]);
 
     return (
         <Drawer
