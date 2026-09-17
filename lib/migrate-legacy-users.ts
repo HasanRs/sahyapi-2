@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { ensureSchema } from "@/lib/ensure-schema";
 
 /**
  * One-time: copy rows from legacy `atamep_users` into `sahyapi_users` if needed.
@@ -6,6 +7,7 @@ import prisma from "@/lib/prisma";
  */
 export async function migrateLegacyUsers() {
   try {
+    await ensureSchema();
     const count = await prisma.sahyapi_users.count();
     if (count > 0) return { migrated: 0, reason: "sahyapi_users already has rows" };
 
