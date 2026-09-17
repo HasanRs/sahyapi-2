@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
-import slugify from "@sindresorhus/slugify";
 import prisma from "@/lib/prisma";
 import { requireAdmin } from "@/lib/api-auth";
-import { getServices } from "@/lib/content-db";
+import { getGroups } from "@/lib/content-db";
 import { serializeRecord } from "@/lib/serialize";
 import { ensureContentSeeded } from "@/lib/ensure-seed";
 
@@ -11,8 +10,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   await ensureContentSeeded();
-  const services = await getServices();
-  return NextResponse.json(services);
+  return NextResponse.json(await getGroups());
 }
 
 export async function POST(req: NextRequest) {
@@ -20,22 +18,15 @@ export async function POST(req: NextRequest) {
   if (!auth.ok) return auth.response;
 
   const body = await req.json();
-  const uuid = body.uuid || randomUUID();
   const title = String(body.title || "").trim();
   if (!title) {
     return NextResponse.json({ error: "title required" }, { status: 400 });
   }
 
-  const row = await prisma.service.create({
+  const row = await prisma.group.create({
     data: {
-      uuid,
+      uuid: body.uuid || randomUUID(),
       title,
-      slug: slugify(title),
-      short_description: body.short_description ?? null,
-      description: body.description ?? null,
-      image: body.image ?? null,
-      category: body.category ?? null,
-      highlights: Array.isArray(body.highlights) ? body.highlights : [],
       created_at: BigInt(body.created_at ?? Date.now()),
     },
   });

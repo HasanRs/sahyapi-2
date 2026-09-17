@@ -10,16 +10,63 @@ datasource db {
   shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
 }
 
-model atamep_users {
+model sahyapi_users {
   id        Int     @id @default(autoincrement())
   email     String  @unique
   password  String
   confirmed Boolean @default(false)
 }
 
-model motifhali_users {
-  id        Int     @id @default(autoincrement())
-  email     String  @unique
-  password  String
-  confirmed Boolean @default(false)
+model Service {
+  uuid              String   @id
+  title             String
+  slug              String   @unique
+  short_description String?
+  description       String?  @db.Text
+  image             String?  @db.Text
+  category          String?
+  highlights        String[] @default([])
+  created_at        BigInt
+
+  @@map("sahyapi_services")
+}
+
+model Post {
+  uuid        String  @id
+  title       String
+  slug        String  @unique
+  description String? @db.Text
+  image       String? @db.Text
+  created_at  BigInt
+
+  @@map("sahyapi_posts")
+}
+
+model Project {
+  uuid         String   @id
+  title        String
+  slug         String   @unique
+  description  String?  @db.Text
+  image        String[] @default([])
+  is_completed Boolean  @default(false)
+  created_at   BigInt
+
+  @@map("sahyapi_projects")
+}
+
+model Reference {
+  uuid       String  @id
+  group      String?
+  image      String? @db.Text
+  created_at BigInt
+
+  @@map("sahyapi_references")
+}
+
+model Group {
+  uuid       String @id
+  title      String
+  created_at BigInt
+
+  @@map("sahyapi_groups")
 }

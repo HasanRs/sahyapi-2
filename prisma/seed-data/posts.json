@@ -1,0 +1,26 @@
+[
+  {
+    "uuid": "post-sarj",
+    "slug": "elektrikli-arac-sarj-istasyonu-projelerinde-dikkat-edilmesi-gerekenler",
+    "created_at": 1762938000000,
+    "image": "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1200&q=70",
+    "title": "Elektrikli Araç Şarj İstasyonu Projelerinde Dikkat Edilmesi Gerekenler",
+    "description": "<p>Elektrikli araç şarj istasyonları hızla yaygınlaşıyor. Doğru planlanmayan bir şarj altyapısı hem işletme maliyetlerini artırır hem de güvenlik riski oluşturur.</p><ul><li>Güç hesabı ve talep analizi</li><li>Koruma, topraklama ve yangın güvenliği</li><li>Altyapı ve kablolama planlaması</li><li>Ruhsat / uygulama proje süreçleri</li></ul>"
+  },
+  {
+    "description": "<p>Fabrikalar, okullar, sağlık tesisleri ve ticari binalarda elektrik tesisatının güncel yönetmeliklere uygun olması; iş güvenliği ve işletme sürekliliği açısından vazgeçilmezdir.</p>",
+    "image": "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=1200&q=70",
+    "slug": "isletmelerde-elektrik-tesisati-uygunluk-kontrolue-neden-kritik",
+    "uuid": "post-guvenlik",
+    "title": "İşletmelerde Elektrik Tesisatı Uygunluk Kontrolü Neden Kritik?",
+    "created_at": 1756895400000
+  },
+  {
+    "created_at": 1750255200000,
+    "description": "<p>Trafo ve orta gerilim yatırımları yüksek maliyetli ve teknik olarak hassas süreçlerdir. İyi bir proje; doğru güç seçimi, koruma koordinasyonu ve eksiksiz keşif dosyası ile başlar.</p>",
+    "image": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=1200&q=70",
+    "uuid": "post-trafo",
+    "slug": "trafo-ve-orta-gerilim-projelerinde-basarili-teslimatin-anahtarlari",
+    "title": "Trafo ve Orta Gerilim Projelerinde Başarılı Teslimatın Anahtarları"
+  }
+]

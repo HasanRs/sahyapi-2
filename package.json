@@ -5,7 +5,7 @@
     "build": "prisma generate && prisma db push && next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "prisma generate && prisma db push && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts"
+    "seed": "prisma generate && prisma db push && npx tsx prisma/seed.ts"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.16",
