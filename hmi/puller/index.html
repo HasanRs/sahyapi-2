@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>PULLER — ProsesTÜRK HMI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./puller.css" />
+</head>
+<body>
+  <div class="panel" id="panel">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-name">ProsesTÜRK</div>
+        <div class="brand-status" id="sysStatus">SİSTEM OTOMATİK</div>
+      </div>
+      <h1 class="page-title">PULLER</h1>
+      <div class="clock" id="clock">--.--.---- --:--:--</div>
+    </header>
+
+    <main class="workspace">
+      <aside class="rail rail-left" id="leftRail" aria-label="Sol I/O"></aside>
+
+      <section class="stage">
+        <div class="stage-view">
+          <div class="machine">
+            <img
+              class="machine-3d"
+              src="./puller-3d-machine.png"
+              alt="Puller 3D makine modeli"
+              draggable="false"
+            />
+
+            <!-- Durum katmanı: limit + animasyonlu konum izi -->
+            <svg class="machine-overlay" viewBox="0 0 920 480" aria-hidden="true">
+              <defs>
+                <linearGradient id="trackGlow" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#0b5cab" stop-opacity="0"/>
+                  <stop offset="50%" stop-color="#0b5cab" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#0b5cab" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <rect id="motionTrack" x="120" y="390" width="680" height="6" rx="3" fill="url(#trackGlow)"/>
+              <g id="carriageMarker" transform="translate(420 0)">
+                <polygon points="0,372 12,390 -12,390" fill="#f0b400" stroke="#8a6d00" stroke-width="1"/>
+                <rect x="-28" y="398" width="56" height="18" rx="4" fill="rgba(255,255,255,0.92)" stroke="#b8c4d1"/>
+                <text id="markerPos" x="0" y="411" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="700" fill="#0b5cab">39830</text>
+              </g>
+              <g id="jaw"></g>
+              <rect id="armIndicator" x="0" y="0" width="0" height="0" fill="transparent"/>
+              <rect id="leafIndicator" x="0" y="0" width="0" height="0" fill="transparent"/>
+            </svg>
+
+            <div class="limit limit-fwd">
+              <span class="lamp" id="fwdLamp"></span>
+              <span class="limit-text">PULLER İLERİ LİMİT</span>
+            </div>
+            <div class="limit limit-back">
+              <span class="lamp lamp-red" id="backLamp"></span>
+              <span class="limit-text">PULLER GERİ LİMİT<br/>TESTERE ÜZERİNDE</span>
+            </div>
+
+            <div class="note">
+              NOT: ÇENE AÇIK SİNYALİ GELMEDİĞİNDE PULLER GERİ GELMEZ
+            </div>
+          </div>
+        </div>
+
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">TORK</div>
+            <div class="metric-value"><span id="torque">35</span><small>%</small></div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">PULLER KONUMU</div>
+            <div class="metric-value"><span id="position">39830,3</span><small>mm</small></div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">EKSTRÜZYON HIZI</div>
+            <div class="metric-value"><span id="speed">10,3</span><small>mm/s</small></div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="rail rail-right" id="rightRail" aria-label="Sağ I/O"></aside>
+    </main>
+
+    <footer class="navbar">
+      <nav class="nav" id="nav"></nav>
+      <button type="button" class="comm-btn">İLETİŞİM</button>
+    </footer>
+  </div>
+
+  <script src="./puller.js"></script>
+</body>
+</html>
