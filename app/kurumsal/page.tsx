@@ -16,14 +16,16 @@ export default function Kurumsal() {
                         tek çatı altında sunar. Kaliteli malzeme, uygun fiyat ve zamanında teslimat
                         ilkeleriyle müşterilerimizin güvenilir çözüm ortağı olmayı hedefleriz.
                     </p>
-                    <p className="text-base text-gray-700 md:text-lg">
+                    <div className="text-base text-gray-700 md:text-lg space-y-3">
                         <p className="font-bold">Şah Yapı olarak hizmet alanlarımız;</p>
-                        -Hırdavat malzemeleri satışı ve tedariki
-                        -Ev, daire ve işyeri tadilat uygulamaları
-                        -Boya, dekorasyon ve yüzey yenileme
-                        -Banyo ve mutfak anahtar teslim yenileme
-                        -Ücretsiz keşif, yazılı teklif ve garantili işçilik
-                    </p>
+                        <ul className="text-left list-disc list-inside space-y-1">
+                            <li>Hırdavat malzemeleri satışı ve tedariki</li>
+                            <li>Ev, daire ve işyeri tadilat uygulamaları</li>
+                            <li>Boya, dekorasyon ve yüzey yenileme</li>
+                            <li>Banyo ve mutfak anahtar teslim yenileme</li>
+                            <li>Ücretsiz keşif, yazılı teklif ve garantili işçilik</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <Footer/>
