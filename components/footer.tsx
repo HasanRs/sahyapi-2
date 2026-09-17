@@ -2,14 +2,14 @@ import Link from "next/link";
 import Leo from "@/assets/images/leo.png";
 import {InstagramOutlined} from "@ant-design/icons";
 import {useEffect, useState} from "react";
+import {collection, firestore, getDocs, orderBy, query} from "@/firebase";
 
 export default function Footer() {
   const [services, setServices] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("/api/services")
-      .then((res) => res.json())
-      .then(setServices)
+    getDocs(query(collection(firestore, "services"), orderBy("created_at")))
+      .then((snap) => setServices(snap.docs.map((d) => d.data())))
       .catch(() => setServices([]));
   }, []);
 

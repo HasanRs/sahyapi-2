@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { getPosts } from "@/lib/content";
+import { getPosts } from "@/lib/firestore-content";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
-  return NextResponse.json(getPosts());
+  const posts = await getPosts();
+  return NextResponse.json(posts);
 }
