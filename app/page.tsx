@@ -8,7 +8,6 @@ import Link from "next/link";
 import moment from "moment";
 import "moment/locale/tr";
 import {LeftOutlined, RightOutlined} from "@ant-design/icons";
-import {collection, firestore, getDocs, orderBy, query} from "@/firebase";
 
 const slider = [
     {
@@ -117,14 +116,25 @@ export default function Home() {
 
     useEffect(() => {
         (async () => {
-            const [refSnap, svcSnap, postSnap] = await Promise.all([
-                getDocs(query(collection(firestore, "references"), orderBy("created_at"))),
-                getDocs(query(collection(firestore, "services"), orderBy("created_at"))),
-                getDocs(query(collection(firestore, "posts"), orderBy("created_at", "desc"))),
-            ]);
-            setReferences(refSnap.docs.map((d) => d.data()).slice(0, 10));
-            setServices(svcSnap.docs.map((d) => d.data()));
-            setPosts(postSnap.docs.map((d) => d.data()).slice(0, 3));
+            try {
+                const [refRes, svcRes, postRes] = await Promise.all([
+                    fetch("/api/references?limit=10", { cache: "no-store" }),
+                    fetch("/api/services", { cache: "no-store" }),
+                    fetch("/api/posts", { cache: "no-store" }),
+                ]);
+                const [refs, svcs, postsData] = await Promise.all([
+                    refRes.ok ? refRes.json() : [],
+                    svcRes.ok ? svcRes.json() : [],
+                    postRes.ok ? postRes.json() : [],
+                ]);
+                setReferences(Array.isArray(refs) ? refs : []);
+                setServices(Array.isArray(svcs) ? svcs : []);
+                setPosts(Array.isArray(postsData) ? postsData.slice(0, 3) : []);
+            } catch {
+                setReferences([]);
+                setServices([]);
+                setPosts([]);
+            }
             setLoading(false);
         })();
     }, []);

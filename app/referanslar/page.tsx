@@ -3,7 +3,6 @@ import {Image} from "antd";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import {useEffect, useState} from "react";
-import {collection, firestore, getDocs, orderBy, query} from "@/firebase";
 import Link from "next/link";
 
 export default function Referanslar() {
@@ -15,21 +14,26 @@ export default function Referanslar() {
     }, []);
 
     const getData = async () => {
-        let referenceSnapshot = await getDocs(query(collection(firestore, "references"), orderBy('created_at')));
-        let references = referenceSnapshot.docs
-            .map(doc => doc.data())
-            .filter(item => item.group);
-
-        let groupSnapshot = await getDocs(query(collection(firestore, "groups"), orderBy('created_at')));
-        setGroups(groupSnapshot.docs
-            .map(doc => doc.data())
-            .map(group => ({
-                ...group,
-                references: references.filter(item => item.group === group.uuid),
-            }))
-            .filter(group => group.references.length > 0)
-        );
-
+        try {
+            const [refRes, groupRes] = await Promise.all([
+                fetch("/api/references", { cache: "no-store" }),
+                fetch("/api/groups", { cache: "no-store" }),
+            ]);
+            const referencesRaw = refRes.ok ? await refRes.json() : [];
+            const groupsRaw = groupRes.ok ? await groupRes.json() : [];
+            const references = (Array.isArray(referencesRaw) ? referencesRaw : [])
+                .filter((item: any) => item.group);
+            setGroups(
+                (Array.isArray(groupsRaw) ? groupsRaw : [])
+                    .map((group: any) => ({
+                        ...group,
+                        references: references.filter((item: any) => item.group === group.uuid),
+                    }))
+                    .filter((group: any) => group.references.length > 0)
+            );
+        } catch {
+            setGroups([]);
+        }
         setLoading(false);
     };
 

@@ -28,7 +28,7 @@ export default function Iletisim() {
                         <a href="tel:+905435334144" className="text-gray-500 text-lg">+90 543 533 41 44</a>
                     </Descriptions.Item>
                     <Descriptions.Item label={<MailOutlined className="text-lg" />} className="flex justify-center">
-                        <a href="mailto:info@atamep.com" className="text-gray-500 text-lg">info@atamep.com</a>
+                        <a href="mailto:info@sahyapihirdavat.com" className="text-gray-500 text-lg">info@sahyapihirdavat.com</a>
                     </Descriptions.Item>
                     <Descriptions.Item label={<EnvironmentOutlined className="text-lg" />} className="flex justify-center">
                         <span className="text-gray-500 text-lg">Kazımiye Mah Dumlupınar Cad. Kılıçoğlu Prestij İş Merkezi No:9-11 Kat:5 D:22 Tekirdağ/Çorlu</span>

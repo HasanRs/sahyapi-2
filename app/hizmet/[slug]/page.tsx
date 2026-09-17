@@ -3,7 +3,6 @@ import {useState, useEffect} from "react";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import {notFound} from "next/navigation";
-import {collection, firestore, getDocs, query, where} from "@/firebase";
 
 export default function ServicePage({params}: any) {
     const [loading, setLoading] = useState(true);
@@ -11,10 +10,14 @@ export default function ServicePage({params}: any) {
 
     useEffect(() => {
         (async () => {
-            const snap = await getDocs(
-                query(collection(firestore, "services"), where("slug", "==", params.slug))
-            );
-            setService(snap.docs[0]?.data() ?? null);
+            try {
+                const res = await fetch("/api/services", { cache: "no-store" });
+                const data = res.ok ? await res.json() : [];
+                const list = Array.isArray(data) ? data : [];
+                setService(list.find((s: any) => s.slug === params.slug) ?? null);
+            } catch {
+                setService(null);
+            }
             setLoading(false);
         })();
     }, [params.slug]);

@@ -2,7 +2,6 @@
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import {useEffect, useState} from "react";
-import {collection, firestore, getDocs, orderBy, query, where} from "@/firebase";
 import Link from "next/link";
 import "moment/locale/tr";
 
@@ -15,9 +14,13 @@ export default function Page() {
     }, []);
 
     const getData = async () => {
-        let postSnapshot = await getDocs(query(collection(firestore, "projects"), where('is_completed', '==', true), orderBy('created_at', 'desc')));
-        setProjects(postSnapshot.docs
-            .map(doc => doc.data()));
+        try {
+            const res = await fetch("/api/projects?completed=true", { cache: "no-store" });
+            const data = res.ok ? await res.json() : [];
+            setProjects(Array.isArray(data) ? data : []);
+        } catch {
+            setProjects([]);
+        }
         setLoading(false);
     };
 
@@ -41,7 +44,7 @@ export default function Page() {
                         {projects.map(item =>
                             <Link key={item.uuid} className="group hover:bg-gray-100 rounded-xl p-5 transition-all"
                                   href={"/proje/" + item.slug}>
-                                {item.image.length > 0 ?
+                                {item.image?.length > 0 ?
                                     <img className="w-full object-cover aspect-[16/10] rounded-xl"
                                          src={item.image[0]}
                                          alt="Image"

@@ -2,15 +2,7 @@
 import {useState, useEffect} from "react";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
-import {
-    firestore,
-    collection,
-    query,
-    where,
-} from "firebase.js";
-import {getDocs} from "@/firebase";
 import {notFound} from "next/navigation";
-import moment from "moment/moment";
 import "moment/locale/tr";
 import {Image} from "antd";
 
@@ -23,9 +15,13 @@ export default function PostPage({params}: any) {
     }, []);
 
     const getData = async () => {
-        let snapshot = await getDocs(query(collection(firestore, "projects"), where('slug', '==', params.slug)));
-        if (!snapshot.empty) {
-            setProject(snapshot.docs[0].data());
+        try {
+            const res = await fetch("/api/projects", { cache: "no-store" });
+            const data = res.ok ? await res.json() : [];
+            const list = Array.isArray(data) ? data : [];
+            setProject(list.find((p: any) => p.slug === params.slug) ?? null);
+        } catch {
+            setProject(null);
         }
         setLoading(false);
     }
@@ -50,7 +46,7 @@ export default function PostPage({params}: any) {
                             <h2 className="text-2xl font-bold md:text-3xl">{project.title}</h2>
                         </div>
 
-                        {project.image.length > 0 && <div>
+                        {project.image?.length > 0 && <div>
                             <Image.PreviewGroup items={project.image}>
                                 <Image src={project.image[0]} preview={{mask: "Önizle"}} className="w-full object-cover aspect-[16/11] rounded-xl" alt="Image"/>
                             </Image.PreviewGroup>

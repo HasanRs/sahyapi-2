@@ -12,18 +12,17 @@ export default function Kurumsal() {
                         Kurumsal
                     </h2>
                     <p className="text-base text-gray-700 md:text-lg">
-                        Ata Mühendislik, yenilikleri ve teknolojiyi takip ederek,
-                        ARGE çalışmalarına önem veren profesyonel kadrosu ile müşteri taleplerini en iyi şekilde değerlendirip,
-                        kaliteden ödün vermeden en uygun maliyet ile hizmeti vermeyi hedeflemektedir.
+                        Şah Yapı, Çorlu ve çevresinde hırdavat malzemeleri satışı ile tadilat hizmetlerini
+                        tek çatı altında sunar. Kaliteli malzeme, uygun fiyat ve zamanında teslimat
+                        ilkeleriyle müşterilerimizin güvenilir çözüm ortağı olmayı hedefleriz.
                     </p>
                     <p className="text-base text-gray-700 md:text-lg">
-                        <p className="font-bold">Ata Mühendislik kurumsal firma anlayışıyla;</p>
-                        -Elektrik Proje ve Taahhüt
-                        -Yüksek Gerilim İşletme Sorumluluğu
-                        -Ölçüm Raporlama ve Bakım Hizmeti
-                        -Kompanzasyon Takip Hizmeti
-                        -Enerji Yöneticisi Danışmanlık Hizmetleri
-                        alanlarda hizmet vermek amacıyla kuruluştur.
+                        <p className="font-bold">Şah Yapı olarak hizmet alanlarımız;</p>
+                        -Hırdavat malzemeleri satışı ve tedariki
+                        -Ev, daire ve işyeri tadilat uygulamaları
+                        -Boya, dekorasyon ve yüzey yenileme
+                        -Banyo ve mutfak anahtar teslim yenileme
+                        -Ücretsiz keşif, yazılı teklif ve garantili işçilik
                     </p>
                 </div>
             </div>

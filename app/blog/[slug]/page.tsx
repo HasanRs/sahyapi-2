@@ -2,13 +2,6 @@
 import {useState, useEffect} from "react";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
-import {
-    firestore,
-    collection,
-    query,
-    where,
-} from "firebase.js";
-import {getDocs} from "@/firebase";
 import {notFound} from "next/navigation";
 import moment from "moment/moment";
 import "moment/locale/tr";
@@ -22,9 +15,13 @@ export default function PostPage({params}: any) {
     }, []);
 
     const getData = async () => {
-        let snapshot = await getDocs(query(collection(firestore, "posts"), where('slug', '==', params.slug)));
-        if (!snapshot.empty) {
-            setPost(snapshot.docs[0].data());
+        try {
+            const res = await fetch("/api/posts", { cache: "no-store" });
+            const data = res.ok ? await res.json() : [];
+            const list = Array.isArray(data) ? data : [];
+            setPost(list.find((p: any) => p.slug === params.slug) ?? null);
+        } catch {
+            setPost(null);
         }
         setLoading(false);
     }

@@ -31,6 +31,8 @@ export const metadata: Metadata = {
     themeColor: "#FFF",
 };
 
+const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
 export default async function RootLayout({
     children,
 }: {
@@ -38,21 +40,22 @@ export default async function RootLayout({
 }) {
     return (
         <html lang="tr">
-            {!(process && process.env.NODE_ENV === 'development') && <>
-            <Script
-                src="https://www.googletagmanager.com/gtag/js?id=G-MWCTXTF8B7"
-                strategy="afterInteractive"
-            />
-            <Script id="google-analytics" strategy="afterInteractive">
-            {`
+            {gaId && (
+                <>
+                    <Script
+                        src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+                        strategy="afterInteractive"
+                    />
+                    <Script id="google-analytics" strategy="afterInteractive">
+                        {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){window.dataLayer.push(arguments);}
                 gtag('js', new Date());
-                
-                gtag('config', 'G-MWCTXTF8B7');
+                gtag('config', '${gaId}');
             `}
-            </Script>
-            </>}
+                    </Script>
+                </>
+            )}
             <body className={inter.variable}>
                 <Toaster/>
                 {children}

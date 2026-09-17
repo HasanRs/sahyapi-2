@@ -4,7 +4,6 @@ import {Bars3Icon, XMarkIcon} from "@heroicons/react/24/outline";
 import {Menu, MenuProps, Grid} from "antd";
 import { useRouter, usePathname } from 'next/navigation'
 import Logo from "@/assets/images/logo.png";
-import {collection, firestore, getDocs, orderBy, query} from "@/firebase";
 
 export default function Header() {
     const router = useRouter();
@@ -67,8 +66,9 @@ export default function Header() {
     ], [items]);
 
     useEffect(() => {
-        getDocs(query(collection(firestore, "services"), orderBy("created_at")))
-            .then((snap) => setServices(snap.docs.map((d) => d.data())))
+        fetch("/api/services", { cache: "no-store" })
+            .then((res) => (res.ok ? res.json() : []))
+            .then((data) => setServices(Array.isArray(data) ? data : []))
             .catch(() => setServices([]));
     }, []);
 
