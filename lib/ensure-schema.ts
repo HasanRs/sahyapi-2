@@ -31,6 +31,20 @@ async function createTablesIfNeeded() {
   `);
 
   await prisma.$executeRawUnsafe(`
+    CREATE TABLE IF NOT EXISTS "sahyapi_products" (
+      "uuid" TEXT PRIMARY KEY,
+      "title" TEXT NOT NULL,
+      "slug" TEXT NOT NULL UNIQUE,
+      "short_description" TEXT,
+      "description" TEXT,
+      "image" TEXT,
+      "category" TEXT,
+      "highlights" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+      "created_at" BIGINT NOT NULL
+    );
+  `);
+
+  await prisma.$executeRawUnsafe(`
     CREATE TABLE IF NOT EXISTS "sahyapi_posts" (
       "uuid" TEXT PRIMARY KEY,
       "title" TEXT NOT NULL,

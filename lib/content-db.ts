@@ -11,6 +11,16 @@ export async function getServiceBySlug(slug: string) {
   return row ? serializeRecord(row) : null;
 }
 
+export async function getProducts() {
+  const rows = await prisma.product.findMany({ orderBy: { created_at: "asc" } });
+  return serializeRecords(rows);
+}
+
+export async function getProductBySlug(slug: string) {
+  const row = await prisma.product.findUnique({ where: { slug } });
+  return row ? serializeRecord(row) : null;
+}
+
 export async function getPosts() {
   const rows = await prisma.post.findMany({ orderBy: { created_at: "desc" } });
   return serializeRecords(rows);
