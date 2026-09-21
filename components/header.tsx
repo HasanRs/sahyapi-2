@@ -4,6 +4,7 @@ import {Bars3Icon, XMarkIcon} from "@heroicons/react/24/outline";
 import {Menu, MenuProps, Grid} from "antd";
 import { useRouter, usePathname } from 'next/navigation'
 import Logo from "@/assets/images/logo.png";
+import {SITE_CONTACT, SITE_TEL_HREF, SITE_WHATSAPP_HREF} from "@/lib/site-contact";
 
 export default function Header() {
     const router = useRouter();
@@ -118,7 +119,7 @@ export default function Header() {
                         />
                     </a>
                 </div>
-                {screens.md ? <div className="flex-1">
+                {screens.md ? <div className="flex-1 flex items-center gap-4">
                     <Menu
                         mode="horizontal"
                         className="w-full border-b-0 justify-end lg:justify-start"
@@ -126,7 +127,23 @@ export default function Header() {
                         items={navigation}
                         onClick={onClick}
                     />
-                </div> : <div className="flex">
+                    <div className="hidden lg:flex shrink-0 flex-col items-end text-sm leading-tight">
+                        <a href={SITE_TEL_HREF} className="font-semibold text-gray-800 hover:text-amber-700 whitespace-nowrap">
+                            {SITE_CONTACT.phoneDisplay}
+                        </a>
+                        <a
+                            href={SITE_WHATSAPP_HREF}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-gray-500 hover:text-amber-700"
+                        >
+                            WhatsApp
+                        </a>
+                    </div>
+                </div> : <div className="flex items-center gap-3">
+                    <a href={SITE_TEL_HREF} className="text-sm font-semibold text-gray-800 hover:text-amber-700 whitespace-nowrap">
+                        {SITE_CONTACT.phoneDisplay}
+                    </a>
                     <button
                         type="button"
                         className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"

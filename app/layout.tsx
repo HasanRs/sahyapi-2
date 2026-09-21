@@ -5,6 +5,7 @@ import {Inter} from "next/font/google";
 import {Toaster} from "react-hot-toast";
 import {ReactNode} from "react";
 import Script from "next/script";
+import {SITE_CONTACT, siteJsonLd} from "@/lib/site-contact";
 
 const inter = Inter({
     variable: "--font-inter",
@@ -13,7 +14,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
     title: "Şah Yapı | Hırdavat ve Tadilat",
-    description: "Şah Yapı — Hırdavat malzemeleri, tadilat, boya dekorasyon ve yenileme hizmetleri.",
+    description: `Şah Yapı — Hırdavat malzemeleri, tadilat, boya dekorasyon ve yenileme. ${SITE_CONTACT.address}. Tel: ${SITE_CONTACT.phoneDisplay}`,
     icons: {
         icon: [
             { url: "/favicon.ico", sizes: "any" },
@@ -22,16 +23,28 @@ export const metadata: Metadata = {
         ],
         apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
     },
+    openGraph: {
+        title: "Şah Yapı | Hırdavat ve Tadilat",
+        description: `Hırdavat ve tadilat — ${SITE_CONTACT.address}. ${SITE_CONTACT.phoneDisplay}`,
+        url: SITE_CONTACT.siteUrl,
+        siteName: SITE_CONTACT.brand,
+        locale: "tr_TR",
+        type: "website",
+    },
     twitter: {
         card: "summary_large_image",
         title: "Şah Yapı | Hırdavat ve Tadilat",
-        description: "Hırdavat malzemeleri ve profesyonel tadilat hizmetleri.",
+        description: `Hırdavat malzemeleri ve profesyonel tadilat. ${SITE_CONTACT.phoneDisplay}`,
     },
-    metadataBase: new URL("https://sahyapihirdavat.com"),
+    metadataBase: new URL(SITE_CONTACT.siteUrl),
     themeColor: "#FFF",
+    other: {
+        "contact:phone_number": SITE_CONTACT.phoneE164,
+    },
 };
 
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
+const jsonLd = siteJsonLd();
 
 export default async function RootLayout({
     children,
@@ -57,6 +70,10 @@ export default async function RootLayout({
                 </>
             )}
             <body className={inter.variable}>
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                />
                 <Toaster/>
                 {children}
             </body>
