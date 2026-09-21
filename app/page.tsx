@@ -8,6 +8,7 @@ import Link from "next/link";
 import moment from "moment";
 import "moment/locale/tr";
 import {LeftOutlined, RightOutlined} from "@ant-design/icons";
+import {SITE_CONTACT, SITE_TEL_HREF, SITE_WHATSAPP_HREF} from "@/lib/site-contact";
 
 const slider = [
     {
@@ -332,10 +333,18 @@ export default function Home() {
                                     İletişime Geçin
                                 </Link>
                                 <a
-                                    href="tel:+905435334144"
+                                    href={SITE_TEL_HREF}
                                     className="rounded-lg border-2 border-white px-8 py-3 font-semibold hover:bg-white/10 transition-colors"
                                 >
-                                    +90 543 533 41 44
+                                    {SITE_CONTACT.phoneDisplay}
+                                </a>
+                                <a
+                                    href={SITE_WHATSAPP_HREF}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="rounded-lg border-2 border-white px-8 py-3 font-semibold hover:bg-white/10 transition-colors"
+                                >
+                                    WhatsApp
                                 </a>
                             </div>
                         </section>

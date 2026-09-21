@@ -1,6 +1,12 @@
 import Link from "next/link";
 import Leo from "@/assets/images/leo.png";
 import {useEffect, useState} from "react";
+import {
+  SITE_CONTACT,
+  SITE_MAILTO_HREF,
+  SITE_TEL_HREF,
+  SITE_WHATSAPP_HREF,
+} from "@/lib/site-contact";
 
 export default function Footer() {
   const [services, setServices] = useState<any[]>([]);
@@ -65,9 +71,27 @@ export default function Footer() {
           <h4 className="text-xs font-semibold text-gray-900 uppercase">İletişim</h4>
 
           <div className="mt-3 grid space-y-3 text-sm">
-            <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="tel:+905435334144">Telefon: +90 543 533 41 44</a></p>
-            <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="mailto:info@sahyapihirdavat.com">E-posta: info@sahyapihirdavat.com</a></p>
-            <p className="text-gray-600">Adres: Kazımiye Mah Dumlupınar Cad. Kılıçoğlu Prestij İş Merkezi No:9-11 Kat:5 D:22 Tekirdağ/Çorlu</p>
+            <p>
+              <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href={SITE_TEL_HREF}>
+                Telefon: {SITE_CONTACT.phoneDisplay}
+              </a>
+            </p>
+            <p>
+              <a
+                className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800"
+                href={SITE_WHATSAPP_HREF}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                WhatsApp: {SITE_CONTACT.phoneDisplay}
+              </a>
+            </p>
+            <p>
+              <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href={SITE_MAILTO_HREF}>
+                E-posta: {SITE_CONTACT.email}
+              </a>
+            </p>
+            <p className="text-gray-600">Adres: {SITE_CONTACT.address}</p>
           </div>
         </div>
 
