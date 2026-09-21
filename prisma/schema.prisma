@@ -31,6 +31,20 @@ model Service {
   @@map("sahyapi_services")
 }
 
+model Product {
+  uuid              String   @id
+  title             String
+  slug              String   @unique
+  short_description String?
+  description       String?  @db.Text
+  image             String?  @db.Text
+  category          String?
+  highlights        String[] @default([])
+  created_at        BigInt
+
+  @@map("sahyapi_products")
+}
+
 model Post {
   uuid        String  @id
   title       String

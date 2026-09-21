@@ -12,6 +12,7 @@ const { Header, Content, Footer } = Layout;
 export const routes: any[] = [
     {label: "Blog", key: "/admin/blog"},
     {label: "Hizmetler", key: "/admin/hizmetler"},
+    {label: "Ürünler", key: "/admin/urunler"},
     {label: "Projeler", key: "/admin/projeler"},
     {label: "Referanslar", key: "/admin/referanslar"},
 ]

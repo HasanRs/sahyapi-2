@@ -1,0 +1,46 @@
+[
+  {
+    "uuid": "sah-urun-vida-civata",
+    "image": "/hizmetler/hirdavat.jpg",
+    "description": "<p><strong>Şah Yapı</strong> hırdavat reyonunda vida, cıvata, somun ve dübel çeşitleri sürekli stokta tutulur. Ev tamiratından şantiye montajına kadar doğru ölçü ve malzeme seçiminde yanınızdayız.</p><p>Paslanmaz, galvanizli ve metrik ürün gruplarıyla ihtiyacınıza uygun çözümü hızlıca bulabilirsiniz.</p>",
+    "created_at": 1726500000000,
+    "title": "Vida & Cıvata",
+    "slug": "vida-civata",
+    "short_description": "Metrik vida, cıvata, somun ve dübel çeşitleri. Ev ve şantiye kullanımı için geniş stok.",
+    "category": "baglanti",
+    "highlights": ["Metrik ölçü", "Paslanmaz seçenek", "Şantiye stoku"]
+  },
+  {
+    "uuid": "sah-urun-boya-malzemeleri",
+    "image": "/hizmetler/boya-dekorasyon.jpg",
+    "description": "<p>İç ve dış cephe boyaları, astarlar, fırça ve rulo setleri Şah Yapı mağazasında bulunur. Renk danışmanlığı ve metraj hesabında ekibimiz size yardımcı olur.</p><p>Kaliteli markalar ve uygun fiyatlarla tadilat projelerinizi destekliyoruz.</p>",
+    "created_at": 1726500001000,
+    "title": "Boya Malzemeleri",
+    "slug": "boya-malzemeleri",
+    "short_description": "İç/dış cephe boyası, astar, fırça ve rulo. Tadilat için eksiksiz boya setleri.",
+    "category": "boya",
+    "highlights": ["İç & dış cephe", "Renk danışmanlığı", "Aksesuar setleri"]
+  },
+  {
+    "uuid": "sah-urun-tesisat",
+    "image": "/hizmetler/banyo-mutfak.jpg",
+    "description": "<p>Su ve elektrik tesisatı için boru, fitting, vana, kablo ve bağlantı elemanları stoklarımızda hazırdır. Banyo-mutfak yenileme projelerinde tek noktadan malzeme temini sağlıyoruz.</p>",
+    "created_at": 1726500002000,
+    "title": "Tesisat Ürünleri",
+    "slug": "tesisat-urunleri",
+    "short_description": "Su ve elektrik tesisatı malzemeleri: boru, fitting, vana ve bağlantı elemanları.",
+    "category": "tesisat",
+    "highlights": ["Su tesisatı", "Elektrik", "Yenileme paketleri"]
+  },
+  {
+    "uuid": "sah-urun-el-aletleri",
+    "image": "/hizmetler/tadilat.jpg",
+    "description": "<p>El aletleri ve küçük el makinaları reyonumuzda tornavida setlerinden matkap uçlarına kadar profesyonel ve amatör kullanım ürünleri bulunur. Dayanıklı markalar, uygun fiyat.</p>",
+    "created_at": 1726500003000,
+    "title": "El Aletleri",
+    "slug": "el-aletleri",
+    "short_description": "Tornavida, anahtar, matkap ucu ve tadilat el aletleri. Profesyonel ve ev kullanımı.",
+    "category": "alet",
+    "highlights": ["Profesyonel setler", "Yedek uç", "Dayanıklı markalar"]
+  }
+]

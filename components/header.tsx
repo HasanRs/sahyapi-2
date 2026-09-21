@@ -11,8 +11,9 @@ export default function Header() {
     const screens = Grid.useBreakpoint();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [services, setServices] = useState<any[]>([]);
+    const [products, setProducts] = useState<any[]>([]);
 
-    const items: MenuProps["items"] = useMemo(() => {
+    const serviceItems: MenuProps["items"] = useMemo(() => {
         return services
             .map(item => ({
                 key: `/hizmet/${item.slug}`,
@@ -20,6 +21,22 @@ export default function Header() {
                 title: item.title,
             }));
     }, [services]);
+
+    const productItems: MenuProps["items"] = useMemo(() => {
+        const children = products.map(item => ({
+            key: `/urun/${item.slug}`,
+            label: item.title,
+            title: item.title,
+        }));
+        return [
+            {
+                key: "/urunler",
+                label: "Tüm Ürünler",
+                title: "Tüm Ürünler",
+            },
+            ...children,
+        ];
+    }, [products]);
 
     const navigation: MenuProps['items'] = useMemo(() => [
         {
@@ -29,7 +46,12 @@ export default function Header() {
         {
             label: "Hizmetler",
             key: "/hizmet/",
-            children: items,
+            children: serviceItems,
+        },
+        {
+            label: "Ürünler",
+            key: "/urunler",
+            children: productItems,
         },
         {
             label: "Projeler",
@@ -63,13 +85,17 @@ export default function Header() {
             label: <span className="font-serif">Blog</span>,
             key: "/blog"
         },
-    ], [items]);
+    ], [serviceItems, productItems]);
 
     useEffect(() => {
         fetch("/api/services", { cache: "no-store" })
             .then((res) => (res.ok ? res.json() : []))
             .then((data) => setServices(Array.isArray(data) ? data : []))
             .catch(() => setServices([]));
+        fetch("/api/products", { cache: "no-store" })
+            .then((res) => (res.ok ? res.json() : []))
+            .then((data) => setProducts(Array.isArray(data) ? data : []))
+            .catch(() => setProducts([]));
     }, []);
 
     const onClick = ({ key }: any) => {

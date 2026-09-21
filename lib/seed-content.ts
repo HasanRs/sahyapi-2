@@ -41,6 +41,8 @@ export async function seedAll(client: PrismaClient = prisma) {
     });
   }
 
+  await seedProductsIfEmpty(client);
+
   const posts = loadJson("posts");
   for (const p of posts) {
     await client.post.upsert({
@@ -120,10 +122,45 @@ export async function seedAll(client: PrismaClient = prisma) {
     users: userMig,
     counts: {
       services: services.length,
+      products: (await client.product.count()),
       posts: posts.length,
       projects: projects.length,
       groups: groups.length,
       references: references.length,
     },
   };
+}
+
+/** Upsert bundled products when the products table is empty (feature rollout). */
+export async function seedProductsIfEmpty(client: PrismaClient = prisma) {
+  const count = await client.product.count();
+  if (count > 0) return { seeded: false, count };
+
+  const products = loadJson("products");
+  for (const p of products) {
+    await client.product.upsert({
+      where: { uuid: p.uuid },
+      create: {
+        uuid: p.uuid,
+        title: p.title,
+        slug: p.slug,
+        short_description: p.short_description ?? null,
+        description: p.description ?? null,
+        image: p.image ?? null,
+        category: p.category ?? null,
+        highlights: Array.isArray(p.highlights) ? p.highlights : [],
+        created_at: BigInt(p.created_at ?? Date.now()),
+      },
+      update: {
+        title: p.title,
+        slug: p.slug,
+        short_description: p.short_description ?? null,
+        description: p.description ?? null,
+        image: p.image ?? null,
+        category: p.category ?? null,
+        highlights: Array.isArray(p.highlights) ? p.highlights : [],
+      },
+    });
+  }
+  return { seeded: true, count: products.length };
 }
